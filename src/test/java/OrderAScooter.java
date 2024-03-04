@@ -7,24 +7,27 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static org.junit.Assert.assertTrue;
+
 public class OrderAScooter {
+    private static final By BUTTON_LOCATOR_IN_HEADER = By.xpath("/html/body/div/div/div[1]/div[1]/div[2]/button[1]"); //кнопка "Заказать" в шапке стенда
+    private static final By BUTTON_LOCATOR_IN_MIDDLE = By.xpath(".//button[@class='Button_Button__ra12g Button_Middle__1CSJM']"); //кнопка "Заказать" в середине стенда
     private WebDriver driver;
     private static final By CLICK_BUTTON_COOKIE = By.xpath("//*[@id=\"rcc-confirm-button\"]"); //локатор для принятия куки
-    private static final By INPUT_FIELD_NAME = By.xpath("/html/body/div/div/div[2]/div[2]/div[1]/input"); //локатор для поля "Имя"
-    private static final By INPUT_FIELD_SURNAME = By.xpath("/html/body/div/div/div[2]/div[2]/div[2]/input"); //локатор для поля "Фамилия"
-    private static final By INPUT_FIELD_ADRESS = By.xpath("/html/body/div/div/div[2]/div[2]/div[3]/input"); //локатор для поля "Адрес"
-    private static final By INPUT_FIELD_DDL_METRO_STATION = By.xpath("/html/body/div/div/div[2]/div[2]/div[4]/div/div/input"); //локатор для поля "Станция метро"
-    //private static final By DDL_METRO_STATION = By.xpath("/html/body/div/div/div[2]/div[2]/div[4]/div/div[2]/ul/li[%d]"); //локатор для значения в выпадающем списке "Станция метро"
-    private static final By INPUT_FIELD_PHONE = By.xpath("/html/body/div/div/div[2]/div[2]/div[5]/input"); //локатор для поля "Телефон"
-    private static final By BUTTON_FURTHER = By.xpath("/html/body/div/div/div[2]/div[3]/button"); //локатор для кнопки "Далее"
-    private static final By INPUT_FIELD_WHEN_TO_BRING_THE_SCOOTER = By.xpath("/html/body/div/div/div[2]/div[2]/div[1]/div[1]/div/input"); //локатор для поля "КОгда привезти самокат
-    private static final By THE_RENTAL_PERIOD = By.xpath("/html/body/div/div/div[2]/div[2]/div[2]/div/div[1]"); //локатор для "Срок аренды"
-    private static final By CHECKBOX_BLACK = By.xpath("/html/body/div/div/div[2]/div[2]/div[3]/label[1]/input"); //локатор для чекбокса "чёрный жемчуг"
-    private static final By CHECKBOX_GREY = By.xpath("/html/body/div/div/div[2]/div[2]/div[3]/label[2]/input"); //локатор для чекбокса "серая безысходность"
-    private static final By NEXT_MONTH_BUTTON = By.xpath("/html/body/div/div/div[2]/div[2]/div[1]/div[2]/div[2]/div/div/button[2]"); //локатор для кнопки переключения месяца на календаре
-    public static final By INPUT_FIELD_COMMENT = By.xpath("/html/body/div/div/div[2]/div[2]/div[4]/input"); //локатор для поля "Комментарий"
-    private static final By BUTTON_ORDER_YES = By.xpath("/html/body/div/div/div[2]/div[5]/div[2]/button[2]"); //локатор для кнопка "Да" во всплывающем окне для оформления заказа
-    private static final By BUTTON_FOR_ORDER = By.xpath("/html/body/div/div/div[2]/div[3]/button[2]"); //локатор кнопки "Заказать" для завершения оформления заказа
+    private static final By INPUT_FIELD_NAME = By.xpath("//input[@placeholder='* Имя']"); //локатор для поля "Имя"
+    private static final By INPUT_FIELD_SURNAME = By.xpath("//input[@placeholder='* Фамилия']"); //локатор для поля "Фамилия"
+    private static final By INPUT_FIELD_ADRESS = By.xpath("//input[@placeholder='* Адрес: куда привезти заказ']"); //локатор для поля "Адрес"
+    private static final By INPUT_FIELD_DDL_METRO_STATION = By.xpath("//input[contains(@placeholder,'Станция метро')]"); //локатор для поля "Станция метро"
+    private static final By INPUT_FIELD_PHONE = By.xpath("//input[contains(@placeholder,'Телефон')]"); //локатор для поля "Телефон"
+    private static final By BUTTON_FURTHER = By.xpath("//button[text()='Далее']"); //локатор для кнопки "Далее"
+    private static final By INPUT_FIELD_WHEN_TO_BRING_THE_SCOOTER = By.xpath("//input[contains(@placeholder,'Когда привезти самокат')]"); //локатор для поля "КОгда привезти самокат
+    private static final By THE_RENTAL_PERIOD = By.xpath("//div[text()='* Срок аренды']"); //локатор для "Срок аренды"
+    private static final By CHECKBOX_BLACK = By.xpath("//input[@id='black']"); //локатор для чекбокса "чёрный жемчуг"
+    private static final By CHECKBOX_GREY = By.xpath("//input[@id='grey']"); //локатор для чекбокса "серая безысходность"
+    private static final By NEXT_MONTH_BUTTON = By.xpath("//button[contains(@aria-label, \"Next Month\")]"); //локатор для кнопки переключения месяца на календаре
+    public static final By INPUT_FIELD_COMMENT = By.xpath("//input[@placeholder=\"Комментарий для курьера\"]"); //локатор для поля "Комментарий"
+    private static final By BUTTON_ORDER_YES = By.xpath("//button[text()='Да']"); //локатор для кнопка "Да" во всплывающем окне для оформления заказа
+    private static final By BUTTON_FOR_ORDER = By.xpath("//button[contains(@class, \"Button_Button__ra12g\") and contains(@class, \"Button_Middle__1CSJM\") and text()='Заказать']"); //локатор кнопки "Заказать" для завершения оформления заказа
 
     public OrderAScooter(WebDriver driver) {
         this.driver = driver;
@@ -34,8 +37,12 @@ public class OrderAScooter {
         cookie.click();
     }
 
-    public void clickButtonOrder(By buttonLocator) { //клик по кнопке "Заказать" в шапке стенда
-        WebElement element = driver.findElement(buttonLocator); //найти элемент по локатору
+    public void clickButtonOrderInHeader() { //клик по кнопке "Заказать" в шапке стенда
+        WebElement element = driver.findElement(BUTTON_LOCATOR_IN_HEADER); //найти элемент по локатору
+        element.click(); //клик по элементу
+    }
+    public void clickButtonOrderInMiddle() {
+        WebElement element = driver.findElement(BUTTON_LOCATOR_IN_MIDDLE);
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element); //скролл до элемента
         element.click(); //клик по элементу
     }
@@ -64,7 +71,8 @@ public class OrderAScooter {
         WebElement metroStationField = driver.findElement(INPUT_FIELD_DDL_METRO_STATION);
         metroStationField.click();
         metroStationField.clear();
-        String locator = String.format("//*[@id=\"root\"]/div/div[2]/div[2]/div[4]/div/div[2]/ul/li[%d]", metro);
+        String locator = String.format("//div[@class = 'select-search__select']/ul/li[%d]", metro);
+        //String locator = String.format("//*[@id=\"root\"]/div/div[2]/div[2]/div[4]/div/div[2]/ul/li[%d]", metro);
         WebElement ddlMetroStation = driver.findElement(By.xpath(locator));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", ddlMetroStation);
         ddlMetroStation.click();
@@ -114,15 +122,15 @@ public class OrderAScooter {
         optionElement.click();
     }
 
-    public void selectCheckboxes(boolean checkbox1, boolean checkbox2) { //находим чекбоксы и выбираем их
+    public void selectCheckboxes(boolean checkboxBlack, boolean checkboxGrey) { //находим чекбоксы и выбираем их
 
-        if (checkbox1) {
-            WebElement checkbox1Element = driver.findElement(CHECKBOX_BLACK);
-            checkbox1Element.click();
+        if (checkboxBlack) {
+            WebElement checkboxBlackColor = driver.findElement(CHECKBOX_BLACK);
+            checkboxBlackColor.click();
         }
-        if (checkbox2) {
-            WebElement checkbox2Element = driver.findElement(CHECKBOX_GREY);
-            checkbox2Element.click();
+        if (checkboxGrey) {
+            WebElement checkboxGreyColor = driver.findElement(CHECKBOX_GREY);
+            checkboxGreyColor.click();
         }
     }
 
@@ -135,21 +143,21 @@ public class OrderAScooter {
         WebElement buttonOrder = driver.findElement(BUTTON_FOR_ORDER);
         buttonOrder.click();
     }
-    public void clickButtonYes(){ //клик по кнопке "Да" и проверка наличия окна
+    public void clickButtonYes() { //клик по кнопке "Да" во всплывающем окне оформления заказа
         WebElement buttonOrderYes = driver.findElement(BUTTON_ORDER_YES);
         buttonOrderYes.click();
+    }
+    public void checkOrderConfirmationWindow() {
         // Проверяем наличие всплывающего окна
-        if (driver.getPageSource().contains("Заказ оформлен")) {
-            System.out.println("Тест пройден: Всплывающее окно 'Заказ оформлен' обнаружено.");
-        } else {
-            System.out.println("Тест не удался: Всплывающее окно 'Заказ оформлен' не найдено.");
-        }
+        assertTrue("Всплывающее окно 'Заказ оформлен' не найдено.", driver.getPageSource().contains("Заказ оформлен"));
+        System.out.println("Тест пройден: Всплывающее окно 'Заказ оформлен' обнаружено.");
     }
 
-    public void theScreenForWhomIsTheScooter(String name, String surname, String address, String phone, int daysToAdd, String option, boolean checkbox1, boolean checkbox2, String commentText, By buttonLocator, int metro) {
+    public void theScreenForWhomIsTheScooter(String name, String surname, String address, String phone, int daysToAdd, String option,
+                                             boolean checkbox1, boolean checkbox2, String commentText, int metro) {
         // Выполнение последовательности действий на экране
         clickCookie();
-        clickButtonOrder(buttonLocator);
+        clickButtonOrderInHeader();
         clickAndInputName(name);
         clickAndInputSurname(surname);
         clickAndInputAdress(address);
@@ -162,6 +170,7 @@ public class OrderAScooter {
         setComment(commentText);
         clickButtonOrder();
         clickButtonYes();
+        checkOrderConfirmationWindow();
     }
 
 }

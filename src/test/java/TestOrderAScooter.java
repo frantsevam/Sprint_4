@@ -1,19 +1,19 @@
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class TestOrderAScooter {
+    private static final String URL = "https://qa-scooter.praktikum-services.ru/"; //локатор для url стенда
     private WebDriver driver;
 
     @Before
     public void setUp() {
         boolean useFirefox = true; //поменять драйвер на мозилу - указать значение на false
         driver = getWebDriver(useFirefox);
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+        driver.get(URL);
     }
     public WebDriver getWebDriver (boolean useFirefox){
         WebDriver driver;
@@ -31,7 +31,7 @@ public class TestOrderAScooter {
     }
 
     @Test
-    public void testOrderWithValidData() {
+    public void firstTestOrderWithValidData() {
         OrderAScooter objOrderAScooter = new OrderAScooter(driver);
         // Ввод корректных данных для заказа
         String name = "Имя";
@@ -41,28 +41,32 @@ public class TestOrderAScooter {
         String phone = "79999999999";
         int daysToAdd = 1;
         String option = "сутки";
-        boolean checkbox1 = true;
-        boolean checkbox2 = true;
+        boolean checkboxBlack = true;
+        boolean checkboxGrey = true;
         String commentText = "Комментарий";
-        By buttonLocator = By.xpath("/html/body/div/div/div[1]/div[1]/div[2]/button[1]");
-        objOrderAScooter.theScreenForWhomIsTheScooter(name, surname, address, phone, daysToAdd, option, checkbox1, checkbox2, commentText, buttonLocator, metro);
+        objOrderAScooter.theScreenForWhomIsTheScooter(name, surname, address, phone, daysToAdd, option, checkboxBlack, checkboxGrey, commentText, metro);
     }
 
     @Test
-    public void testOrderWithInvalidData() {
+    public void secondTestOrderWithValidData() {
         OrderAScooter objOrderAScooter = new OrderAScooter(driver);
-        // Ввод некорректных данных для заказа
+        // Ввод корректных данных для заказа
         String name = "Карлик";
         String surname = "Карликов";
         String address = "Адресс, 350";
-        int metro = 100;
+        int metro = 50;
         String phone = "79666666666";
         int daysToAdd = 3;
         String option = "семеро суток";
-        boolean checkbox1 = true;
-        boolean checkbox2 = false;
+        boolean checkboxBlack = true;
+        boolean checkboxGrey = false;
         String commentText = "";
-        By buttonLocator = By.xpath("/html/body/div/div/div[1]/div[4]/div[2]/div[5]/button");
-        objOrderAScooter.theScreenForWhomIsTheScooter(name, surname, address, phone, daysToAdd, option, checkbox1, checkbox2, commentText, buttonLocator, metro);
+        objOrderAScooter.theScreenForWhomIsTheScooter(name, surname, address, phone, daysToAdd, option, checkboxBlack, checkboxGrey, commentText, metro);
+    }
+    @Test
+    public void testClickButtonInMiddle() {
+        OrderAScooter objOrderAScooter = new OrderAScooter(driver);
+        objOrderAScooter.clickButtonOrderInMiddle();
+
     }
 }
