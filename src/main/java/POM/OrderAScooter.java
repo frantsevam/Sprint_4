@@ -1,3 +1,5 @@
+package POM;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -7,10 +9,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static org.junit.Assert.assertTrue;
-
 public class OrderAScooter {
-    private static final By BUTTON_LOCATOR_IN_HEADER = By.xpath("/html/body/div/div/div[1]/div[1]/div[2]/button[1]"); //кнопка "Заказать" в шапке стенда
+    private static final By BUTTON_LOCATOR_IN_HEADER = By.xpath("//button[contains(@class, 'Button_Button__ra12g')]"); //кнопка "Заказать" в шапке стенда
     private static final By BUTTON_LOCATOR_IN_MIDDLE = By.xpath(".//button[@class='Button_Button__ra12g Button_Middle__1CSJM']"); //кнопка "Заказать" в середине стенда
     private WebDriver driver;
     private static final By CLICK_BUTTON_COOKIE = By.xpath("//*[@id=\"rcc-confirm-button\"]"); //локатор для принятия куки
@@ -28,68 +28,96 @@ public class OrderAScooter {
     public static final By INPUT_FIELD_COMMENT = By.xpath("//input[@placeholder=\"Комментарий для курьера\"]"); //локатор для поля "Комментарий"
     private static final By BUTTON_ORDER_YES = By.xpath("//button[text()='Да']"); //локатор для кнопка "Да" во всплывающем окне для оформления заказа
     private static final By BUTTON_FOR_ORDER = By.xpath("//button[contains(@class, \"Button_Button__ra12g\") and contains(@class, \"Button_Middle__1CSJM\") and text()='Заказать']"); //локатор кнопки "Заказать" для завершения оформления заказа
-
+    private static final By THE_ORDER_HAS_BEEN_PLACED = By.xpath("//div[@class='Order_ModalHeader__3FDaJ']"); //локатор для окна "Заказ оформлен"
     public OrderAScooter(WebDriver driver) {
         this.driver = driver;
     }
-    public void clickCookie(){ //принять куки
+    public OrderAScooter clickCookie(){ //принять куки
         WebElement cookie = driver.findElement(CLICK_BUTTON_COOKIE);
         cookie.click();
+        return this;
     }
 
-    public void clickButtonOrderInHeader() { //клик по кнопке "Заказать" в шапке стенда
+    public OrderAScooter clickButtonOrderInHeader() { //клик по кнопке "Заказать" в шапке стенда
         WebElement element = driver.findElement(BUTTON_LOCATOR_IN_HEADER); //найти элемент по локатору
         element.click(); //клик по элементу
+        return this;
     }
-    public void clickButtonOrderInMiddle() {
+    public OrderAScooter clickButtonOrderInMiddle() { //клик по кнопке "Заказать" в середине стенда
         WebElement element = driver.findElement(BUTTON_LOCATOR_IN_MIDDLE);
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element); //скролл до элемента
         element.click(); //клик по элементу
+        return this;
+    }
+    public OrderAScooter clickOrderButton(String buttonLocation) {
+        if (buttonLocation.equals("header")) {
+            clickButtonOrderInHeader();
+        } else if (buttonLocation.equals("middle")) {
+            clickButtonOrderInMiddle();
+        }
+        return this;
     }
 
-    public void clickAndInputName(String name) { //клик по полю "Имя" и ввод текста
+    public OrderAScooter clickAndInputName(String name) { //клик по полю "Имя" и ввод текста
         WebElement nameField = driver.findElement(INPUT_FIELD_NAME);
         nameField.click();
         nameField.clear();
         nameField.sendKeys(name);
+        return this;
     }
 
-    public void clickAndInputSurname(String surname) { //клик по полю "Фамилия и ввод текста
+    public OrderAScooter clickAndInputSurname(String surname) { //клик по полю "Фамилия и ввод текста
         WebElement surnameField = driver.findElement(INPUT_FIELD_SURNAME);
         surnameField.click();
         surnameField.clear();
         surnameField.sendKeys(surname);
+        return this;
     }
 
-    public void clickAndInputAdress(String address) { //клик по полю "Адрес" и ввод текста
+    public OrderAScooter clickAndInputAdress(String address) { //клик по полю "Адрес" и ввод текста
         WebElement addressField = driver.findElement(INPUT_FIELD_ADRESS);
         addressField.click();
         addressField.clear();
         addressField.sendKeys(address);
+        return this;
     }
-    public void clickAndSelectMetroStation(int metro) { //выбираем станцию метро
+    public OrderAScooter clickAndSelectMetroStation(int metro) { //выбираем станцию метро
         WebElement metroStationField = driver.findElement(INPUT_FIELD_DDL_METRO_STATION);
         metroStationField.click();
         metroStationField.clear();
         String locator = String.format("//div[@class = 'select-search__select']/ul/li[%d]", metro);
-        //String locator = String.format("//*[@id=\"root\"]/div/div[2]/div[2]/div[4]/div/div[2]/ul/li[%d]", metro);
         WebElement ddlMetroStation = driver.findElement(By.xpath(locator));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", ddlMetroStation);
         ddlMetroStation.click();
+        return this;
     }
 
-    public void clickAndInputPhone(String phone) { //клик по полю "Телефон" и ввод текста
+    public OrderAScooter clickAndInputPhone(String phone) { //клик по полю "Телефон" и ввод текста
         WebElement phoneField = driver.findElement(INPUT_FIELD_PHONE);
         phoneField.click();
         phoneField.clear();
         phoneField.sendKeys(phone);
+        return this;
+    }
+    public OrderAScooter customerDataForm(String buttonLocation, String name, String surname, String address, int metro, String phone) {
+        // Выполнение последовательности действий на экране
+        clickCookie();
+        clickOrderButton(buttonLocation);
+        clickAndInputName(name);
+        clickAndInputSurname(surname);
+        clickAndInputAdress(address);
+        clickAndSelectMetroStation(metro);
+        clickAndInputPhone(phone);
+        clickButtonFurther();
+        return this;
     }
 
-    public void clickButtonFurther() { //клик по кнопку "Далее"
+    public OrderAScooter clickButtonFurther() { //клик по кнопку "Далее"
         driver.findElement(BUTTON_FURTHER).click();
+        return this;
     }
 
-    public void clickInputFieldWhenToBringTheScooter(int daysToAdd) { //выбираем дату в календаре
+    public OrderAScooter clickInputFieldWhenToBringTheScooter(int daysToAdd) { //выбираем дату в календаре
 
         driver.findElement(INPUT_FIELD_WHEN_TO_BRING_THE_SCOOTER).click();
 
@@ -111,18 +139,20 @@ public class OrderAScooter {
             targetDayElement = driver.findElement(By.xpath(targetDayXpath));
         }
         targetDayElement.click();
+        return this;
     }
 
-    public void clickDdlTheRentalPeriod(String option) { //выбираем срок аренды
+    public OrderAScooter clickDdlTheRentalPeriod(String option) { //выбираем срок аренды
         WebElement rentalPeriod = driver.findElement(THE_RENTAL_PERIOD);
         rentalPeriod.click();
         // Выбор нужного значения в выпадающем списке
         WebElement optionElement = driver.findElement(By.xpath("//div[@class='Dropdown-menu']//div[contains(text(), '" + option + "')]"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", optionElement);
         optionElement.click();
+        return this;
     }
 
-    public void selectCheckboxes(boolean checkboxBlack, boolean checkboxGrey) { //находим чекбоксы и выбираем их
+    public OrderAScooter selectCheckboxes(boolean checkboxBlack, boolean checkboxGrey) { //находим чекбоксы и выбираем их
 
         if (checkboxBlack) {
             WebElement checkboxBlackColor = driver.findElement(CHECKBOX_BLACK);
@@ -132,45 +162,37 @@ public class OrderAScooter {
             WebElement checkboxGreyColor = driver.findElement(CHECKBOX_GREY);
             checkboxGreyColor.click();
         }
+        return this;
     }
 
-    public void setComment(String commentText) { // Находим поле "Комментарий" и кликаем по нему
+    public OrderAScooter setComment(String commentText) { // Находим поле "Комментарий" и кликаем по нему
         WebElement commentField = driver.findElement(INPUT_FIELD_COMMENT);
         commentField.clear();
         commentField.sendKeys(commentText);
+        return this;
     }
-    public void clickButtonOrder() { //клик по кнопке "Заказать" для оформления заказа
+    public OrderAScooter clickButtonOrder() { //клик по кнопке "Заказать" для оформления заказа
         WebElement buttonOrder = driver.findElement(BUTTON_FOR_ORDER);
         buttonOrder.click();
+        return this;
     }
-    public void clickButtonYes() { //клик по кнопке "Да" во всплывающем окне оформления заказа
+    public OrderAScooter clickButtonYes() { //клик по кнопке "Да" во всплывающем окне оформления заказа
         WebElement buttonOrderYes = driver.findElement(BUTTON_ORDER_YES);
         buttonOrderYes.click();
+        return this;
     }
-    public void checkOrderConfirmationWindow() {
+    public boolean checkOrderConfirmationWindow() {
         // Проверяем наличие всплывающего окна
-        assertTrue("Всплывающее окно 'Заказ оформлен' не найдено.", driver.getPageSource().contains("Заказ оформлен"));
-        System.out.println("Тест пройден: Всплывающее окно 'Заказ оформлен' обнаружено.");
+        return driver.findElement(THE_ORDER_HAS_BEEN_PLACED).isDisplayed();
     }
-
-    public void theScreenForWhomIsTheScooter(String name, String surname, String address, String phone, int daysToAdd, String option,
-                                             boolean checkbox1, boolean checkbox2, String commentText, int metro) {
-        // Выполнение последовательности действий на экране
-        clickCookie();
-        clickButtonOrderInHeader();
-        clickAndInputName(name);
-        clickAndInputSurname(surname);
-        clickAndInputAdress(address);
-        clickAndSelectMetroStation(metro);
-        clickAndInputPhone(phone);
-        clickButtonFurther();
+    public OrderAScooter orderDetails(int daysToAdd, String option, boolean checkboxBlack, boolean checkboxGrey, String commentText) {
         clickInputFieldWhenToBringTheScooter(daysToAdd);
         clickDdlTheRentalPeriod(option);
-        selectCheckboxes(checkbox1, checkbox2);
+        selectCheckboxes(checkboxBlack, checkboxGrey);
         setComment(commentText);
         clickButtonOrder();
         clickButtonYes();
-        checkOrderConfirmationWindow();
+        return this;
     }
 
 }
