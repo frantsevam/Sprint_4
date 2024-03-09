@@ -1,4 +1,4 @@
-package POM;
+package pageobjectmodel;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -28,7 +28,7 @@ public class OrderAScooter {
     public static final By INPUT_FIELD_COMMENT = By.xpath("//input[@placeholder=\"Комментарий для курьера\"]"); //локатор для поля "Комментарий"
     private static final By BUTTON_ORDER_YES = By.xpath("//button[text()='Да']"); //локатор для кнопка "Да" во всплывающем окне для оформления заказа
     private static final By BUTTON_FOR_ORDER = By.xpath("//button[contains(@class, \"Button_Button__ra12g\") and contains(@class, \"Button_Middle__1CSJM\") and text()='Заказать']"); //локатор кнопки "Заказать" для завершения оформления заказа
-    private static final By THE_ORDER_HAS_BEEN_PLACED = By.xpath("//div[@class='Order_ModalHeader__3FDaJ']"); //локатор для окна "Заказ оформлен"
+    private static final By THE_ORDER_HAS_BEEN_PLACED = By.xpath("//*[text() = 'Заказ оформлен']"); //локатор для окна "Заказ оформлен"
     public OrderAScooter(WebDriver driver) {
         this.driver = driver;
     }
@@ -49,7 +49,7 @@ public class OrderAScooter {
         element.click(); //клик по элементу
         return this;
     }
-    public OrderAScooter clickOrderButton(String buttonLocation) {
+    public OrderAScooter clickOrderButton(String buttonLocation) { //выбор по какой кнопке "Заказать" кликать
         if (buttonLocation.equals("header")) {
             clickButtonOrderInHeader();
         } else if (buttonLocation.equals("middle")) {

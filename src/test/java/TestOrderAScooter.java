@@ -1,4 +1,4 @@
-import POM.OrderAScooter;
+import pageobjectmodel.OrderAScooter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -67,6 +67,7 @@ public class TestOrderAScooter {
     public static Object[][] getTestData() {
         return new Object[][] {
                 {"header","Имя","Фамилия","Адресс, 1",5,"79999999999",1,"сутки",true,true,"Комментарий"},
+                {"middle","Имя","Фамилия","Адресс, 1",5,"79999999999",1,"сутки",true,true,"Комментарий"},
                 {"middle","Карлик","Карликов","Адресс, 350",50,"79666666666",3,"семеро суток",true,false,""}
         };
     }
@@ -74,7 +75,7 @@ public class TestOrderAScooter {
     @Test
     public void testOrderWithValidData() {
         Boolean actual = new OrderAScooter(driver)
-                // OrderAScooter objOrderAScooter = new OrderAScooter(driver);
+
                 // Ввод данных клиента
                 .customerDataForm(buttonLocation,name, surname,address,metro,phone)
                 // Ввод данных заказа

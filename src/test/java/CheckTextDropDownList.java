@@ -1,4 +1,4 @@
-import POM.HomePageAScooter;
+import pageobjectmodel.HomePageAScooter;
 
 import org.junit.After;
 import org.junit.Before;
