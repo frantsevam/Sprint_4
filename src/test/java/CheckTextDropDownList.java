@@ -67,7 +67,6 @@ public class CheckTextDropDownList {
 
     @Test
     public void testDropDownListText() {
-        // HomePageAScooter objHomePageAScooter = new HomePageAScooter(driver);
         String actualText = new HomePageAScooter(driver)
                 .scrollAndClickElementDropDownList(questionText) //кликаем на элемент ддл
                 .getAndVerifyTextDropDownList(idQuestionText);
